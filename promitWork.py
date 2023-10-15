@@ -2,6 +2,8 @@ import google.generativeai as palm
 from dotenv import load_dotenv
 import os
 from fpdf import FPDF
+from google.api_core import retry
+
 load_dotenv()
 API_KEY: str = os.getenv("API_KEY")
 palm.configure(api_key=API_KEY)
@@ -9,7 +11,7 @@ models = [m for m in palm.list_models() if 'generateText' in m.supported_generat
 model = models[0].name
 print(model)
 
-
+@retry.Retry()
 def prompt_generetor(intro, university, proff, researchtitle):
     prompt = f"""
     suppose you are research student and your are {intro}.
